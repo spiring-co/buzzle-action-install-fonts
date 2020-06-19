@@ -32,7 +32,9 @@ module.exports = (job, settings, { fonts }) => {
                                         }
 
                                         console.log("installed")
+
                                         resolve("Installed")
+
                                     }
 
                                 );
