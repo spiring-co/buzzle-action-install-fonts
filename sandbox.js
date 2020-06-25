@@ -13,4 +13,4 @@ fontInstaller(null, null, {
         "https://spiring-creator.s3.amazonaws.com/fonts/MetalMania-Regular.ttf",
     },
   ],
-});
+}).catch(console.error);

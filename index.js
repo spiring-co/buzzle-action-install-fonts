@@ -9,13 +9,18 @@ module.exports = async (job, settings, { fonts }) => {
 
   const promises = fonts.map(async ({ src, name }) => {
     await getFileFromUrl(src);
-    const {
-      stderr,
-    } = await exec(
-      `reg query "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Fonts" /f "${name}"`,
-      { shell: "powershell.exe" }
+    const { stderr } = await exec(
+      `reg query HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Fonts /f "${name}"`
     );
-    if (stderr) throw new Error(stderr);
+    if (!stderr) return "Font already Installed";
+
+    const { stderr, stdout } = await exec(
+      `reg add HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Fonts /v ${name} /t REG_SZ /d ${fileName} /f`
+    );
+
+    if (stderr) throw new Error("Install Command File");
+
+    return "Installed";
   });
 
   return Promise.all(promises);
