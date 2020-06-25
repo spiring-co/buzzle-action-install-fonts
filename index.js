@@ -1,28 +1,32 @@
-const { exec } = require("child_process");
+const { exec, execSync } = require("child_process");
 const fs = require("fs");
 const https = require("https");
 
 const FONT_DIRECTORY = "C:\\windows\\fonts\\";
+const FONTS_KEY =
+  "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Fonts";
 
 module.exports = async (job, settings, { fonts }) => {
   if (!fonts.length) return "No Fonts Supplied";
 
   const promises = fonts.map(async ({ src, name }) => {
     await getFileFromUrl(src);
-    const { stderr } = await exec(
-      `reg query HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Fonts /f "${name}"`
-    );
-    if (!stderr) return "Font already Installed";
+    const fileName = src.split("/").pop();
 
-    const { stderr, stdout } = await exec(
-      `reg add HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Fonts /v ${name} /t REG_SZ /d ${fileName} /f`
-    );
-
-    if (stderr) throw new Error("Install Command File");
-
-    return "Installed";
+    try {
+      execSync(`REG QUERY "${FONTS_KEY}" /v "${name}"`);
+      return "Already Installed";
+    } catch (err) {
+      try {
+        execSync(
+          `REG ADD "${FONTS_KEY}" /v "${name}" /t REG_SZ /d ${fileName} /f`
+        );
+        return "Installed";
+      } catch (err) {
+        throw new Error(err);
+      }
+    }
   });
-
   return Promise.all(promises);
 };
 
