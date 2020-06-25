@@ -10,17 +10,18 @@ module.exports = async (job, settings, { fonts }) => {
   if (!fonts.length) return "No Fonts Supplied";
 
   const promises = fonts.map(async ({ src, name }) => {
-    await getFileFromUrl(src);
-    const fileName = src.split("/").pop();
-
+    const extension = src.substr(src.lastIndexOf("."))
+    await getFileFromUrl(src, name + extension);
     try {
       execSync(`REG QUERY "${FONTS_KEY}" /v "${name}"`);
+      console.log("Already Installed")
       return "Already Installed";
     } catch (err) {
       try {
         execSync(
-          `REG ADD "${FONTS_KEY}" /v "${name}" /t REG_SZ /d ${fileName} /f`
+          `REG ADD "${FONTS_KEY}" /v "${name}" /t REG_SZ /d ${name}${extension} /f`
         );
+        console.log("Installed")
         return "Installed";
       } catch (err) {
         throw new Error(err);
@@ -30,17 +31,16 @@ module.exports = async (job, settings, { fonts }) => {
   return Promise.all(promises);
 };
 
-const getFileFromUrl = (src) => {
+const getFileFromUrl = (src, name) => {
   return new Promise((resolve, reject) => {
-    const fileName = src.split("/").pop();
-    const filePath = `${FONT_DIRECTORY}${fileName}`;
+    const filePath = `${FONT_DIRECTORY}${name}`;
     const file = fs.createWriteStream(filePath);
 
     https.get(src, (response) => {
       const stream = response.pipe(file);
 
       stream.on("finish", function () {
-        resolve({ filePath, fileName });
+        resolve(true);
       });
       stream.on("error", reject);
     });
