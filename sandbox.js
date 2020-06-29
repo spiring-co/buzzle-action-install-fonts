@@ -1,5 +1,5 @@
 //  import should be like
-//const fontInstaller= require("install-fonts")
+//const fontInstaller= require("action-install-fonts")
 
 // remove this as it is imported locally
 const fontInstaller = require("./index");
