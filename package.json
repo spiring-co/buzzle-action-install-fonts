@@ -1,5 +1,5 @@
 {
-  "name": "action-install-fonts",
+  "name": "buzzle-action-install-fonts",
   "version": "1.0.8",
   "description": "Action for nexrender to install fonts used in template",
   "homepage": "https://github.com/spiring-co/action-install-fonts#readme",
