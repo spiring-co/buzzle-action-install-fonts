@@ -11,6 +11,10 @@ fontInstaller(null, null, {
       name: "MetalMania-Regular",
       src:
         "https://spiring-creator.s3.amazonaws.com/fonts/MetalMania-Regular.ttf",
+    }, {
+      name: "Inconsolata-Regular",
+      src:
+        "https://spiring-creator.s3.amazonaws.com/outputs/1616826776379.ttf",
     },
   ],
 }).catch(console.error);

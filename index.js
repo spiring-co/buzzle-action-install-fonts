@@ -14,7 +14,7 @@ module.exports = async (job, settings, { fonts }) => {
     await getFileFromUrl(src, name + extension);
     try {
       execSync(`REG QUERY "${FONTS_KEY}" /v "${name}"`);
-      console.log("Already Installed")
+      console.log("Font already Installed")
       return "Already Installed";
     } catch (err) {
       try {
@@ -24,7 +24,8 @@ module.exports = async (job, settings, { fonts }) => {
         console.log("Installed")
         return "Installed";
       } catch (err) {
-        throw new Error(err);
+        console.log(`Failed to install ${name}`, err.message)
+        // throw new Error(err);
       }
     }
   });
@@ -34,15 +35,20 @@ module.exports = async (job, settings, { fonts }) => {
 const getFileFromUrl = (src, name) => {
   return new Promise((resolve, reject) => {
     const filePath = `${FONT_DIRECTORY}${name}`;
-    const file = fs.createWriteStream(filePath);
+    if (fs.existsSync(filePath)) {
+      console.log("Font file exist!")
+      resolve(true)
+    } else {
+      const file = fs.createWriteStream(filePath);
 
-    https.get(src, (response) => {
-      const stream = response.pipe(file);
+      https.get(src, (response) => {
+        const stream = response.pipe(file);
 
-      stream.on("finish", function () {
-        resolve(true);
+        stream.on("finish", function () {
+          resolve(true);
+        });
+        stream.on("error", reject);
       });
-      stream.on("error", reject);
-    });
+    }
   });
 };
