@@ -6,30 +6,46 @@ const FONT_DIRECTORY = "C:\\windows\\fonts\\";
 const FONTS_KEY =
   "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Fonts";
 
-module.exports = async (job, settings, { fonts }) => {
-  if (!fonts.length) return "No Fonts Supplied";
-
-  const promises = fonts.map(async ({ src, name }) => {
-    const extension = src.substr(src.lastIndexOf("."))
-    await getFileFromUrl(src, name + extension);
-    try {
-      execSync(`REG QUERY "${FONTS_KEY}" /v "${name}"`);
-      console.log("Font already Installed")
-      return "Already Installed";
-    } catch (err) {
+module.exports = async (job, settings, { fonts, onStart, onComplete }) => {
+  onStart()
+  settings.logger.log(
+    `[${job.uid}] [buzzle-action-font-install] Started!`
+  );
+  return new Promise((resolve, reject) => {
+    if (!fonts.length) return resolve("No Fonts Supplied")
+    const promises = fonts.map(async ({ src, name }) => {
+      const extension = src.substr(src.lastIndexOf("."))
+      await getFileFromUrl(src, name + extension);
       try {
-        execSync(
-          `REG ADD "${FONTS_KEY}" /v "${name}" /t REG_SZ /d ${name}${extension} /f`
+        execSync(`REG QUERY "${FONTS_KEY}" /v "${name}"`);
+        settings.logger.log(
+          `[${job.uid}] [buzzle-action-font-install] Font already Installed ${name}`
         );
-        console.log("Installed")
-        return "Installed";
+        return "Already Installed";
       } catch (err) {
-        console.log(`Failed to install ${name}`, err.message)
-        // throw new Error(err);
+        try {
+          execSync(
+            `REG ADD "${FONTS_KEY}" /v "${name}" /t REG_SZ /d ${name}${extension} /f`
+          );
+          settings.logger.log(
+            `[${job.uid}] [buzzle-action-font-install] Installed complete - ${name}`
+          );
+          return "Installed";
+        } catch (err) {
+          settings.logger.log(
+            `[${job.uid}] [buzzle-action-font-install] Failed to install ${name}`, err.message
+          );
+        }
       }
-    }
-  });
-  return Promise.all(promises);
+    });
+    Promise.all(promises).then(() => {
+      onComplete()
+      settings.logger.log(
+        `[${job.uid}] [buzzle-action-font-install] Complete`
+      );
+      resolve("Installed Successfully")
+    })
+  })
 };
 
 const getFileFromUrl = (src, name) => {

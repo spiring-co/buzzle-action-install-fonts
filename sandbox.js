@@ -5,16 +5,20 @@
 const fontInstaller = require("./index");
 
 // To Install fonts without the context of nexrender job use as below
-fontInstaller(null, null, {
+fontInstaller({ output: "C:\\Users\\Utkarsh\\Desktop", workpath: "C:\\Users\\Utkarsh\\Desktop" },
+  { logger: { log: console.log }, workpath: "C:\\Users\\Utkarsh\\Desktop" }, {
+  onStart: () => console.log("Started Action font install"),
+  onComplete: () => console.log("finished Action font install"),
   fonts: [
+    {
+      name: "Iegular",
+      src:
+        "https://spiring-creator.",
+    },
     {
       name: "MetalMania-Regular",
       src:
         "https://spiring-creator.s3.amazonaws.com/fonts/MetalMania-Regular.ttf",
-    }, {
-      name: "Inconsolata-Regular",
-      src:
-        "https://spiring-creator.s3.amazonaws.com/outputs/1616826776379.ttf",
     },
   ],
 }).catch(console.error);
