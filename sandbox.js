@@ -13,7 +13,7 @@ fontInstaller({ output: "C:\\Users\\Utkarsh\\Desktop", workpath: "C:\\Users\\Utk
     {
       name: "Iegular",
       src:
-        "https://spiring-creator.",
+        "https://spiring-creator.s3.amazonaws.com/outpu16826776379.ttf",
     },
     {
       name: "MetalMania-Regular",
