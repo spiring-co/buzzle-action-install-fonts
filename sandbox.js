@@ -13,7 +13,7 @@ fontInstaller({ output: "C:\\Users\\Utkarsh\\Desktop", workpath: "C:\\Users\\Utk
     {
       name: "Inconsolata-Regular",
       src:
-        "https://spiring-creator.s3.amazonaws.com/outpu16826776379.ttf",
+        "https://spiring-creator.s3.amazonaws.com/thumbnails/1616836126551.ttf",
     },
     {
       name: "MetalMania-Regular",
