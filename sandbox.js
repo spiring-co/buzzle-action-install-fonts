@@ -11,7 +11,7 @@ fontInstaller({ output: "C:\\Users\\Utkarsh\\Desktop", workpath: "C:\\Users\\Utk
   onComplete: () => console.log("finished Action font install"),
   fonts: [
     {
-      name: "Iegular",
+      name: "Inconsolata-Regular",
       src:
         "https://spiring-creator.s3.amazonaws.com/outpu16826776379.ttf",
     },
